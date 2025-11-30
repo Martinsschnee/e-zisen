@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justins Vape Liefer Übersicht</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Premium Loader -->
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar glass">
+        <a href="#" class="logo">Vape Lieferung</a>
+        <div class="nav-links">
+            <a href="/admin.html" class="nav-btn">Anmelden</a>
+            <button id="theme-toggle" class="theme-toggle">☀️</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero container">
+        <h1>Willkommen!</h1>
+        <p>Hier kannst du deine Vape Lieferung verfolgen. Bei fragen, melde dich auf Snap</p>
+
+        <!-- Status Card -->
+        <div class="status-container">
+            <div class="glass-card">
+                <div class="status-header">
+                    <div class="status-icon">
+                        <i id="status-icon-inner" class="fas fa-box"></i>
+                    </div>
+                    <div class="status-text">
+                        <h2 id="status-text">Aktueller Status</h2>
+                        <p id="status-message" class="status-message">Lade Status...</p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div id="progress-fill" class="progress-line-fill"></div>
+
+                    <!-- Steps -->
+                    <div class="step" data-step="0">
+                        <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <span class="step-label">Bestellt</span>
+                    </div>
+                    <div class="step" data-step="1">
+                        <div class="step-icon"><i class="fas fa-industry"></i></div>
+                        <span class="step-label">Bearbeitung</span>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-icon"><i class="fas fa-truck"></i></div>
+                        <span class="step-label">Versandt</span>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <span class="step-label">Geliefert</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

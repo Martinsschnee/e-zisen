@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem 0;
+            flex-direction: column-reverse;
+        }
+
+        @media (min-width: 900px) {
+            .dashboard-layout {
+                flex-direction: row;
+            }
+
+            .main-content {
+                flex: 1;
+            }
+
+            .sidebar-nav {
+                width: 250px;
+                position: sticky;
+                top: 100px;
+                height: fit-content;
+            }
+        }
+
+        .sidebar-nav {
+            order: 2;
+        }
+
+        .main-content {
+            order: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateX(-5px);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn.selected {
+            border-color: var(--text-color);
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .data-table th {
+            opacity: 0.7;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass">
+        <a href="/" class="logo">Vape Lieferungen Admin</a>
+        <div class="nav-links">
+            <button id="logout-btn" class="nav-btn" style="background:transparent; border:none;">Abmelden</button>
+            <button id="theme-toggle" class="theme-toggle">☀️</button>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 100px;">
+        <div class="dashboard-layout">
+
+            <!-- Main Content Area (Left) -->
+            <div class="main-content">
+
+                <!-- View: Analytics (Default) -->
+                <div id="view-analytics" class="view-section active">
+                    <div class="glass-card analytics-card">
+                        <h3>Live Besucher</h3>
+                        <div
+                            style="font-size: 4rem; font-weight: 700; color: var(--accent-color); text-align: center; margin: 2rem 0;">
+                            <span id="live-count">0</span>
+                        </div>
+                        <p style="text-align: center; opacity: 0.7;">Aktiv in den letzten 30s</p>
+                    </div>
+
+                    <div class="glass-card analytics-card" style="margin-top: 2rem;">
+                        <h3>Besuche (Letzte 24h)</h3>
+                        <canvas id="visitsChart"></canvas>
+                    </div>
+
+                    <!-- IP List -->
+                    <div class="glass-card analytics-card" style="margin-top: 2rem;">
+                        <h3>Letzte Besucher (IPs)</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>IP Adresse</th>
+                                        <th>Zeitpunkt</th>
+                                        <th>User Agent</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ip-list-body">
+                                    <tr>
+                                        <td colspan="10">Lade Daten...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Status Management -->
+                <div id="view-status" class="view-section">
+                    <div class="glass-card">
+                        <h3>Status Aktualisieren</h3>
+                        <form id="status-form" style="margin-top: 1.5rem;">
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display:block; margin-bottom:0.5rem;">Status Nachricht</label>
+                                <input type="text" id="status-text-input" class="form-input" required>
+                                <!-- Quick Templates -->
+                                <div style="margin-top: 1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                    <button type="button" class="template-btn"
+                                        onclick="setTemplate('Die Vapes wurden noch nicht bestellt.')">Nicht
+                                        bestellt</button>
+                                    <button type="button" class="template-btn"
+                                        onclick="setTemplate('Die Vapes sind in Bestellung.')">In Bestellung</button>
+                                    <button type="button" class="template-btn"
+                                        onclick="setTemplate('Die Vapes wurden bestellt.')">Bestellt</button>
+                                    <button type="button" class="template-btn"
+                                        onclick="setTemplate('Die Vapes werden voraussichtlich heute geliefert.')">Heute</button>
+                                    <button type="button" class="template-btn"
+                                        onclick="setTemplate('Die Vapes sind angekommen.')">Angekommen</button>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display:block; margin-bottom:0.5rem;">Farbe</label>
+                                <div class="option-group">
+                                    <div class="color-btn" style="background:var(--status-gray)"
+                                        onclick="setColor('gray')" data-color="gray"></div>
+                                    <div class="color-btn" style="background:var(--status-blue)"
+                                        onclick="setColor('blue')" data-color="blue"></div>
+                                    <div class="color-btn" style="background:var(--status-yellow)"
+                                        onclick="setColor('yellow')" data-color="yellow"></div>
+                                    <div class="color-btn" style="background:var(--status-green)"
+                                        onclick="setColor('green')" data-color="green"></div>
+                                    <div class="color-btn" style="background:var(--status-red)"
+                                        onclick="setColor('red')" data-color="red"></div>
+                                </div>
+                                <input type="hidden" id="status-color-input" value="gray">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display:block; margin-bottom:0.5rem;">Fortschritt</label>
+                                <select id="status-step-input" class="step-select">
+                                    <option value="0">Bestellt</option>
+                                    <option value="1">Bearbeitung</option>
+                                    <option value="2">Versandt</option>
+                                    <option value="3">Geliefert</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display:block; margin-bottom:0.5rem;">Icon (FontAwesome Klasse)</label>
+                                <input type="text" id="status-icon-input" value="fa-circle-notch" class="form-input">
+                            </div>
+
+                            <button type="submit" class="btn-login" style="width:100%;">Status Aktualisieren</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Navigation (Right) -->
+            <div class="sidebar-nav">
+                <div class="glass-card" style="padding: 1rem;">
+                    <h4 style="margin-bottom: 1rem; opacity: 0.7; font-size: 0.9rem; text-transform: uppercase;">Menü
+                    </h4>
+                    <div class="nav-item active" onclick="switchView('analytics', this)">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Live Statistik</span>
+                    </div>
+                    <div class="nav-item" onclick="switchView('status', this)">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Status</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+
+</html>

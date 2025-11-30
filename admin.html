@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="glass-card login-card">
+            <h2 style="margin-bottom: 2rem;">Admin Zugang</h2>
+            <div id="login-error" class="error-msg"
+                style="color: var(--status-red); display: none; margin-bottom: 1rem;">Ungültige Zugangsdaten</div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Benutzername</label>
+                    <input type="text" id="username" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Passwort</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+                <button type="submit" class="btn-login">Anmelden</button>
+            </form>
+        </div>
+    </div>
+    <script src="assets/js/admin.js"></script>
+</body>
+
+</html>
